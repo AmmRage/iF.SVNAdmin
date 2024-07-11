@@ -55,7 +55,16 @@ $(document).ready(function(){
      LdapGroupsToUserAttributeValue: $("#LdapGroupsToUserAttributeValue").val()},
     "#LdapGroupTestResult");
   });
-
+  
+  let defaultValueArray = ["/etc/subversion/subversion-access-control", "/etc/subversion/passwd", "/home/svn", "/usr/bin/svn", "/usr/bin/svnadmin"];
+  let setDefaultValueElementsIdArray = ["SVNAuthFile", "SVNUserFile", "SVNParentPath", "SvnExecutable", "SvnAdminExecutable"];
+  for (let i = 0; i < setDefaultValueElementsIdArray.length; i++) {
+    let elementId = setDefaultValueElementsIdArray[i];
+    let elementValue = $("#"+elementId).val();
+    if (elementValue.trim() === "") {
+      $("#"+elementId).val(defaultValueArray[i]);
+    }
+  }
 });
 </script>
 
