@@ -388,30 +388,42 @@ if (check_request_var("setadmin") || $show_setadmin)
   }
 
   // Display users, which can be defined as Administrator.
+
+  // file_put_contents('/home/svn/log.txt', "check user view active\n", FILE_APPEND);
   if ($appEngine->isUserViewActive())
   {
+	// file_put_contents('/home/svn/log.txt', "check user view： true\n", FILE_APPEND);
     $users = $appEngine->getUserViewProvider()->getUsers(false);
     $usersCount = count($users);
 
-    // If there are no users, we create one - if possible.
+    // If there are no users, we create one - if possible.	
     if (empty($users))
     {
+	  // file_put_contents('/home/svn/log.txt', "no users, we create one\n", FILE_APPEND);
+
+	  // file_put_contents('/home/svn/log.txt', "check user edit active\n", FILE_APPEND);
       if ($appEngine->isUserEditActive())
       {
+		// file_put_contents('/home/svn/log.txt', "check user edit active: true\n", FILE_APPEND);
         $u = new \svnadmin\core\entities\User();
         $u->name = "admin";
         $u->password = "admin";
 
         try {
         	if (!$appEngine->getUserEditProvider()->addUser($u)) {
+				// file_put_contents('/home/svn/log.txt', "add user: false\n", FILE_APPEND);
         		throw new Exception("ERROR: Can not add user.");
         	}
+			// file_put_contents('/home/svn/log.txt', "add user: true\n", FILE_APPEND);
 
         	if (!$appEngine->getUserEditProvider()->save()) {
+				// file_put_contents('/home/svn/log.txt', "save user: false\n", FILE_APPEND);
         		throw new Exception("ERROR: Can not save changes.");
         	}
+			// file_put_contents('/home/svn/log.txt', "save user: true\n", FILE_APPEND);
         }
         catch (Exception $e) {
+			// file_put_contents('/home/svn/log.txt', "encounter error when add and save user\n", FILE_APPEND);
         	$appEngine->addException($e);
         }
 
@@ -420,14 +432,19 @@ if (check_request_var("setadmin") || $show_setadmin)
 
         try {
         	if (!$appEngine->getAclManager()->assignUserToRole($u, $r)) {
+				// file_put_contents('/home/svn/log.txt', "assign user role: false\n", FILE_APPEND);
         		throw new Exception("ERROR: Can not assign Administrator role.");
         	}
+			// file_put_contents('/home/svn/log.txt', "assign user role: true\n", FILE_APPEND);
 
         	if (!$appEngine->getAclManager()->save()) {
+				// file_put_contents('/home/svn/log.txt', "getAclManager save: false\n", FILE_APPEND);
         		throw new Exception("ERROR: Can not save changes.");
         	}
+			// file_put_contents('/home/svn/log.txt', "getAclManager save: true\n", FILE_APPEND);
         }
         catch (Exception $e) {
+			// file_put_contents('/home/svn/log.txt', "encounter error when assign role\n", FILE_APPEND);
 			$appEngine->addException($e);
         }
 
@@ -435,14 +452,15 @@ if (check_request_var("setadmin") || $show_setadmin)
       }
       else
       {
-        // Display message. That no user edit provider is defined to create a
-        // default admin user.
+		// file_put_contents('/home/svn/log.txt', "That no user edit provider is defined to create a default admin user\n", FILE_APPEND);
+        // Display message. That no user edit provider is defined to create a default admin user.
         SetValue("NoUserEditActive", true);
       }
     }
     // Display user selection.
     else
     {
+      // file_put_contents('/home/svn/log.txt', "users not empty\n", FILE_APPEND);
       usort($users, array('\svnadmin\core\entities\User',"compare"));
       SetValue("UserList", $users);
       SetValue("ShowUserSelection", true);
@@ -450,6 +468,7 @@ if (check_request_var("setadmin") || $show_setadmin)
   }
   else
   {
+	// file_put_contents('/home/svn/log.txt', "check user view： false\n", FILE_APPEND);
   	$appEngine->addException(new Exception(tr("You have to define a user view provider.")));
   }
 
